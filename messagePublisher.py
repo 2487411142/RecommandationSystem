@@ -5,7 +5,7 @@ from io import BytesIO
 
 # Configuration
 BUCKET_NAME = '861276118887transactions'
-CSV_FILE_KEY = 'transactions.xlsx'
+CSV_FILE_KEY = 'transactions.xlsx' #TODO:UPDATE TO READ CSV FILE
 KAFKA_TOPIC = 'MSKTutorialTopic'
 KAFKA_BROKER = 'b-1.msktutorialcluster.zqx1m7.c6.kafka.us-west-2.amazonaws.com:9098'
 KAFKA_CONFIG = '/home/ec2-user/kafka_2.13-3.6.0/bin/client.properties'
