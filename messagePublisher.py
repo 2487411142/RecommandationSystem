@@ -1,55 +1,69 @@
-import boto3
-import pandas as pd
-import subprocess
-from io import BytesIO
+from kafka import KafkaProducer
+from aws_msk_iam_sasl_signer import MSKAuthTokenProvider
+import json
+import csv
 
-# Configuration
-BUCKET_NAME = '861276118887transactions'
-CSV_FILE_KEY = 'transactions.xlsx' #TODO:UPDATE TO READ CSV FILE
-KAFKA_TOPIC = 'MSKTutorialTopic'
-KAFKA_BROKER = 'b-1.msktutorialcluster.zqx1m7.c6.kafka.us-west-2.amazonaws.com:9098'
-KAFKA_CONFIG = '/home/ec2-user/kafka_2.13-3.6.0/bin/client.properties'
+# Kafka Configuration
+TOPIC_NAME = 'MSKTutorialTopic'
+BROKERS = 'b-1.msktutorialcluster.98xo4e.c22.kafka.us-east-1.amazonaws.com:9098'
+REGION = 'us-east-1'
 
+class MSKTokenProvider():
+    def token(self):
+        token, _ = MSKAuthTokenProvider.generate_auth_token(REGION)
+        return token
 
-def download_excel_from_s3(bucket_name, file_key):
-    """Download an Excel file from S3 and return its content as a DataFrame."""
-    s3 = boto3.client('s3')
-    print(f"Downloading {file_key} from bucket {bucket_name}...")
-    response = s3.get_object(Bucket=bucket_name, Key=file_key)
-    file_content = response['Body'].read()  # Read the file content as binary
-    return pd.read_excel(BytesIO(file_content))  # Load it into a Pandas DataFrame
+tp = MSKTokenProvider()
 
+producer = KafkaProducer(
+    bootstrap_servers=BROKERS,
+    value_serializer=lambda v: json.dumps(v).encode('utf-8'),
+    retry_backoff_ms=500,
+    request_timeout_ms=20000,
+    security_protocol='SASL_SSL',
+    sasl_mechanism='OAUTHBEARER',
+    sasl_oauth_token_provider=tp, )
 
-def send_dataframe_to_kafka(df):
-    """Send each row of the DataFrame as JSON to the Kafka topic."""
-    for _, row in df.iterrows():
-        # Convert the row to JSON
-        json_data = row.to_json()
-        print(f"Sending message: {json_data}")
+def read_csv_chunk(csv_file_path,batch_size):
+    try:
+        with open(csv_file_path, mode='r', encoding='utf-8-sig') as file:
+            reader = csv.DictReader(file)
+            batch = []
 
-        # Use Kafka CLI to send the message
-        process = subprocess.Popen(
-            [
-                "/home/ec2-user/kafka_2.13-3.6.0/bin/kafka-console-producer.sh",
-                "--broker-list", KAFKA_BROKER,
-                "--producer.config", KAFKA_CONFIG,
-                "--topic", KAFKA_TOPIC
-            ],
-            stdin=subprocess.PIPE
-        )
-        # Send the JSON data
-        process.communicate(input=json_data.encode())
+            for i, row in enumerate(reader):
+                batch.append(row)
 
+                # When batch is full, publish to Kafka
+                if len(batch) >= batch_size:
+                    publish_batch(batch)
+                    batch = []  # Clear batch buffer
 
-def main():
-    # Download the Excel file from S3 and load it as a DataFrame
-    df = download_excel_from_s3(BUCKET_NAME, CSV_FILE_KEY)
+                # Log progress every 10,000 rows
+                if i % batch_size == 0:
+                    print(f"{i} rows processed...")
 
-    # Send the DataFrame content to Kafka as JSON
-    send_dataframe_to_kafka(df)
+            # Publish remaining rows in batch
+            if batch:
+                publish_batch(batch)
 
-    print("All messages sent successfully!")
+    except Exception as e:
+        print(f"Error processing file: {e}")
 
+    finally:
+        # Flush all pending messages
+        producer.flush()
 
-if __name__ == "__main__":
-    main()
+def publish_batch(batch):
+    """Publish a batch of messages to Kafka."""
+    for row in batch:
+        try:
+            producer.send(TOPIC_NAME, value=row)
+        except Exception as e:
+            print(f"Error sending message: {e}")
+
+if __name__ == '__main__':
+
+    csv_file_path = 'data.csv'      # Path to CSV file
+    batch_size = 10000              # message batch size
+
+    read_csv_chunk(csv_file_path,batch_size) # Process the CSV file in batch and publish to Kafka
