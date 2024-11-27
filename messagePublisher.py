@@ -4,8 +4,8 @@ import json
 import csv
 
 # Kafka Configuration
-TOPIC_NAME = 'MSKTutorialTopic'
-BROKERS = 'b-1.msktutorialcluster.98xo4e.c22.kafka.us-east-1.amazonaws.com:9098'
+TOPIC_NAME = 'bigdataProject'
+BROKERS = 'boot-kic5gwhr.c2.kafka-serverless.us-east-1.amazonaws.com:9098'
 REGION = 'us-east-1'
 
 class MSKTokenProvider():
@@ -63,7 +63,7 @@ def publish_batch(batch):
 
 if __name__ == '__main__':
 
-    csv_file_path = 'data.csv'      # Path to CSV file
+    csv_file_path = 'purchase_history_from_electronics_store.csv'      # Path to CSV file
     batch_size = 10000              # message batch size
 
     read_csv_chunk(csv_file_path,batch_size) # Process the CSV file in batch and publish to Kafka
