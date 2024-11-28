@@ -4,7 +4,7 @@ import json
 import csv
 
 # Kafka Configuration
-TOPIC_NAME = 'bigdataProject'
+TOPIC_NAME = 'mytopic'
 BROKERS = 'boot-kic5gwhr.c2.kafka-serverless.us-east-1.amazonaws.com:9098'
 REGION = 'us-east-1'
 
@@ -22,7 +22,8 @@ producer = KafkaProducer(
     request_timeout_ms=20000,
     security_protocol='SASL_SSL',
     sasl_mechanism='OAUTHBEARER',
-    sasl_oauth_token_provider=tp, )
+    sasl_oauth_token_provider=tp,
+    acks = 'all')
 
 def read_csv_chunk(csv_file_path,batch_size):
     try:
