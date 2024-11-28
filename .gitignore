@@ -1,0 +1,17 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# IDE
+.idea/
+.vscode
+*.iws
+*.iml
+*.ipr
+
+# OS
+**/.DS_Store
+**/Thumbs.db
+$RECYCLE.BIN/
+*.lnk
