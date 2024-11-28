@@ -29,9 +29,9 @@ def main():
 
     # cache
     transactions.cache()
-    print('first elimination')
-    print(transactions.filter(transactions['brand'] == '').count())
-    transactions.show()
+    # print('first elimination')
+    # print(transactions.filter(transactions['brand'] == '').count())
+    # transactions.show()
 
 
     # finding the map between category_id, category_code
@@ -54,9 +54,9 @@ def main():
 
     # eliminate the rows whose category code is still empty
     filled_category= filled_category.filter(sf.col("category_code").isNotNull())
-    print('map category codes')
-    print(filled_category.filter(filled_category['category_code'].isNull()).count())
-    filled_category.show()
+    # print('map category codes')
+    # print(filled_category.filter(filled_category['category_code'].isNull()).count())
+    # filled_category.show()
     filled_category.cache()
 
     # find the map between product_id, brand
@@ -64,7 +64,6 @@ def main():
         filled_category.groupBy("product_id")
         .agg(sf.first("brand", ignorenulls=True).alias("brand_mapping_temp"))
     )
-    brand_mapping.show(10)
 
     # fill the missing brand
     filled_brand = (
@@ -83,11 +82,10 @@ def main():
     )
 
     # cleaning up the whole category_code
-    final_data = filled_brand.filter(sf.col("brand") != None)
-    print(final_data.count())
+    final_data = filled_brand.filter(filled_brand['brand'].isNotNull())
 
     # show data
-    final_data.show()
+    # final_data.show()
 
 
 
