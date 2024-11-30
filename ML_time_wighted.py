@@ -136,7 +136,9 @@ def main():
     print("Root-mean-square error = " + str(rmse))
 
     # Generate top 10 movie recommendations for each user
-    userRecs = model.recommendForAllUsers(10)
+    userRecs = model.recommendForAllUsers(3)
+    userRecs.show()
+
     # Generate top 10 user recommendations for each movie
     prodRecs = model.recommendForAllItems(10)
 

@@ -89,8 +89,9 @@ def main():
         .drop("brand_mapping_temp")
     )
 
-    # cleaning up the whole category_code
+    # clean the record if the brand is still missing
     final_data = filled_brand.filter(filled_brand['brand'].isNotNull())
+    final_data.coalesce(1).write.mode('overwrite').csv('./result/transformed_data',header=True)
 
     # show data
     # final_data.show()
@@ -156,6 +157,9 @@ def main():
     top = top.orderBy(['user_id_index', 'rating'], ascending=[True, False])
     top = top.select('user_id_index', 'user_id', 'product_id', 'rating', 'category_code', 'brand', 'price')
     top.show(10)
+
+
+    top.coalesce(1).write.mode('overwrite').csv('./result/predictions',header=True)
 
 
 if __name__ == '__main__':
