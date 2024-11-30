@@ -1,6 +1,7 @@
 import sys
+from datetime import datetime
 
-from pyspark.ml import Pipeline
+from sympy import false
 
 assert sys.version_info >= (3, 5) # make sure we have Python 3.5+
 from pyspark.sql import SparkSession, functions as sf, types, Row
@@ -30,6 +31,9 @@ def main():
 
     # eliminate transactions without userid
     transactions = transactions.filter(transactions['user_id'].isNotNull())
+
+    # eliminate transactions happened on 1970/01/01 which means missing value
+    transactions = transactions.filter(transactions['event_time'] >= datetime(2020,1,1))
 
     # cache
     transactions.cache()
@@ -96,16 +100,17 @@ def main():
     data = final_data.groupBy(final_data.user_id, final_data.product_id).count()
 
     # use a string indexer to transform the (long) id to (int) id
-    data = data.select(data['user_id'].cast('string'), data['product_id'].cast('string'), data['count'])
+    data = data.withColumn('user_id', data['user_id'].cast('string'))
+    data = data.withColumn('product_id', data['product_id'].cast('string'))
     indexer1 = StringIndexer(inputCol="user_id", outputCol="user_id_index")
     indexer2 = StringIndexer(inputCol="product_id", outputCol="product_id_index")
     model1 =  indexer1.fit(data)
     temp = model1.transform(data)
     model2 = indexer2.fit(temp)
     ready_to_use = model2.transform(temp)
-    ready_to_use = (ready_to_use.withColumn('user_id', ready_to_use['user_id_index'].cast('int'))
-                    .withColumn('product_id', ready_to_use['product_id_index'].cast('int')))
-    ready_to_use.drop('user_id_index').drop('product_id_index')
+    ready_to_use = (ready_to_use.withColumn('user_id_index', ready_to_use['user_id_index'].cast('int'))
+                    .withColumn('product_id_index', ready_to_use['product_id_index'].cast('int')))
+    ready_to_use.show()
 
     # split data
     (training, test) = ready_to_use.randomSplit([0.8, 0.2])
@@ -113,23 +118,44 @@ def main():
     test.cache()
 
     # build and train model
-    als = ALS(maxIter=5, regParam=0.01, userCol="user_id", itemCol="product_id", ratingCol="count",
+    als = ALS(maxIter=5, regParam=0.01, userCol="user_id_index", itemCol="product_id_index", ratingCol="count",
               coldStartStrategy="drop", implicitPrefs=True)
     model = als.fit(training)
 
-    # Evaluate the model by computing the RMSE on the test data
+    # evaluate the model by computing the RMSE on the test data
     predictions = model.transform(test)
     evaluator = RegressionEvaluator(metricName="rmse", labelCol="count",
                                     predictionCol="prediction")
     rmse = evaluator.evaluate(predictions)
     print("Root-mean-square error = " + str(rmse))
 
-    # Generate top 2 product recommendations for each user
-    model.recommendForAllUsers(2).show(10)
+    # generate top 3 product recommendations for each user
+    top = model.recommendForAllUsers(3)
+    top = top.withColumn('recommendations', sf.explode(sf.col('recommendations')))
+    top = top.withColumn('product_id_index', top['recommendations.product_id_index'])
+    top = top.withColumn('rating', top['recommendations.rating'])
+    top = top.drop('recommendations')
+    top.show(10)
 
+    # get product id -> product id index map
+    product_map = ready_to_use.select('product_id_index', 'product_id').distinct()
 
+    # join map to get product id
+    top = top.join(product_map, on='product_id_index', how="left")
+    top.show(10)
 
+    # get user id index -> user id map
+    user_map = ready_to_use.select('user_id_index', 'user_id').distinct()
 
+    # join user_map to get user id
+    top = top.join(user_map, on='user_id_index', how="left")
+
+    # get product id -> category code & brand & price map
+    id_to_code_map = final_data.select('product_id', 'category_code', 'brand', 'price').distinct()
+    top = top.join(id_to_code_map, on='product_id', how="left")
+    top = top.orderBy(['user_id_index', 'rating'], ascending=[True, False])
+    top = top.select('user_id_index', 'user_id', 'product_id', 'rating', 'category_code', 'brand', 'price')
+    top.show(10)
 
 
 if __name__ == '__main__':
