@@ -9,7 +9,7 @@ from pyspark.ml.evaluation import RegressionEvaluator
 from pyspark.ml.recommendation import ALS
 from pyspark.ml.feature import StringIndexer
 
-PATH = './New'
+PATH = 's3://861276118887datasink/purchases2024/11/28/02/'
 
 
 def main():
@@ -91,7 +91,7 @@ def main():
 
     # clean the record if the brand is still missing
     final_data = filled_brand.filter(filled_brand['brand'].isNotNull())
-    final_data.coalesce(1).write.mode('overwrite').csv('./result/transformed_data',header=True)
+    final_data.coalesce(1).write.mode('overwrite').csv('s3://861276118887datasink/transformed_data',header=True)
 
     # show data
     # final_data.show()
@@ -159,7 +159,7 @@ def main():
     top.show(10)
 
 
-    top.coalesce(1).write.mode('overwrite').csv('./result/predictions',header=True)
+    top.coalesce(1).write.mode('overwrite').csv('s3://861276118887datasink/predictions',header=True)
 
 
 if __name__ == '__main__':

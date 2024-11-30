@@ -10,7 +10,7 @@ from pyspark.sql.functions import current_date, year,datediff
 from pyspark.sql.types import IntegerType
 
 
-PATH = './New'
+PATH = 's3://861276118887datasink/purchases2024/11/28/02/'
 
 def main():
     # read rdd
