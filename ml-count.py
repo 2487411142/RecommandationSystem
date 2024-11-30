@@ -1,8 +1,6 @@
 import sys
 from datetime import datetime
 
-from sympy import false
-
 assert sys.version_info >= (3, 5) # make sure we have Python 3.5+
 from pyspark.sql import SparkSession, functions as sf, types, Row
 from pyspark.ml.evaluation import RegressionEvaluator
