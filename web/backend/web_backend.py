@@ -102,13 +102,13 @@ def per_month():
     return get_per_month_data(transactions)
 
 
-@app.route("/api/stat/top_user_per_month")
-def top_user_per_month():
-    user_spend = transactions.groupBy("user_id").agg(functions.sum("price").alias("spend"))
-    top_user_id = user_spend.sort("spend", ascending=False).first()["user_id"]
-    transactions_top_user = transactions.filter(transactions["user_id"] == top_user_id)
+@app.route("/api/stat/top_category_per_month")
+def top_category_per_month():
+    category_sale_count = transactions.groupBy("category_code").agg(functions.count(functions.expr("*")).alias("count"))
+    top_cat_code = category_sale_count.sort("count", ascending=False).first()["category_code"]
+    transactions_top_cat = transactions.filter(transactions["category_code"] == top_cat_code)
 
-    return get_per_month_data(transactions_top_user)
+    return get_per_month_data(transactions_top_cat)
 
 
 if __name__ == "__main__":
