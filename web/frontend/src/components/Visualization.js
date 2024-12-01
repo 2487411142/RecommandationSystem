@@ -37,19 +37,21 @@ ChartJS.register(
 const Visualization = () => {
   const [monthlySales, setMonthlySales] = useState(null);
   const [topSpendingCustomers, setTopSpendingCustomers] = useState(null);
-  const [topSellingProducts, setTopSellingProducts] = useState(null);
+  const [topSellingCategories, setTopSellingCategories] = useState(null);
   const [topSpendingTrends, setTopSpendingTrends] = useState(null);
 
   // Request data
   const fetchData = async () => {
     try {
-      const response = await axios.get("http://localhost:5001/api/data"); // 假设 Flask 后端的 API 路径
-      const data = response.data; //get data
+      const topCatResponse = await axios.get("/api/stat/top_category");
+      const topUserResponse = await axios.get("/api/stat/top_user");
+      const monthlySalesResponse = await axios.get("/api/stat/per_month");
+      const topCatTrendResponse = await axios.get("/api/stat/top_category_per_month");
 
-      setMonthlySales(data.monthlySales);
-      setTopSpendingCustomers(data.topSpendingCustomers);
-      setTopSellingProducts(data.topSellingProducts);
-      setTopSpendingTrends(data.topSpendingTrends);
+      setMonthlySales(monthlySalesResponse.data);
+      setTopSpendingCustomers(topUserResponse.data);
+      setTopSellingCategories(topCatResponse.data);
+      setTopSpendingTrends(topCatTrendResponse.data);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
@@ -59,7 +61,7 @@ const Visualization = () => {
     fetchData();
   }, []);
 
-  if (!monthlySales || !topSpendingCustomers || !topSellingProducts || !topSpendingTrends) {
+  if (!monthlySales || !topSpendingCustomers || !topSellingCategories || !topSpendingTrends) {
     return <Typography variant="h6" textAlign="center">Loading...</Typography>;
   }
 
@@ -105,7 +107,7 @@ const Visualization = () => {
             <Typography variant="h6" textAlign="center">
               Top 15 卖得最好的商品
             </Typography>
-            <Pie data={topSellingProducts} options={options} />
+            <Pie data={topSellingCategories} options={options} />
           </Box>
         </Grid>
 

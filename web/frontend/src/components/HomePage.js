@@ -8,7 +8,7 @@ const HomePage = () => {
 
   const fetchRecommendations = async () => {
     try {
-      const response = await axios.get(`/api/recommendations?user_id=${userId}`);
+      const response = await axios.get(`/api/user_predict/${userId}`);
       setRecommendations(response.data);
     } catch (error) {
       console.error("Error fetching recommendations:", error);
