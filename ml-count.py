@@ -89,6 +89,17 @@ def main():
 
     # clean the record if the brand is still missing
     final_data = filled_brand.filter(filled_brand['brand'].isNotNull())
+    final_data = final_data.select(
+        final_data["event_time"],
+        final_data["order_id"],
+        final_data["product_id"],
+        final_data["category_id"],
+        final_data["category_code"],
+        final_data["brand"],
+        final_data["price"],
+        final_data["user_id"]
+    )
+    final_data.cache()
     final_data.coalesce(1).write.mode('overwrite').csv('s3://861276118887datasink/transformed_data',header=True)
 
     # show data
