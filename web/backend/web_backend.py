@@ -68,9 +68,8 @@ def top_user():
     return user_spend_list
 
 
-@app.route("/api/stat/per_month")
-def per_month():
-    transactions_with_month = transactions.withColumn("month", functions.month("event_time"))
+def get_per_month_data(df):
+    transactions_with_month = df.withColumn("month", functions.month("event_time"))
     per_month_sale = transactions_with_month.groupBy("month").agg(
         functions.sum("price").alias("sales"),
         functions.count(functions.expr("*")).alias("count")
@@ -94,6 +93,20 @@ def per_month():
 
     per_month_sale_list = [r.asDict() for r in per_month_sale.collect()]
     return per_month_sale_list
+
+
+@app.route("/api/stat/per_month")
+def per_month():
+    return get_per_month_data(transactions)
+
+
+@app.route("/api/stat/top_user_per_month")
+def top_user_per_month():
+    user_spend = transactions.groupBy("user_id").agg(functions.sum("price").alias("spend"))
+    top_user_id = user_spend.sort("spend", ascending=False).first()["user_id"]
+    transactions_top_user = transactions.filter(transactions["user_id"] == top_user_id)
+
+    return get_per_month_data(transactions_top_user)
 
 
 if __name__ == "__main__":
