@@ -30,13 +30,17 @@ transactions = spark.read.csv("../../result/transformed_data", header=True, sche
 transactions.cache()
 
 
+def df_to_dict_list(df):
+    # Change the Dataframe to list of Dict, Flask render JSON base on it.
+    dict_list = [r.asDict() for r in df.collect()]
+    return dict_list
+
+
 @app.route("/api/user_predict/<user_id>")
 def predict_info(user_id):
     user_predict_info = (prediction.filter(prediction["user_id"] == user_id)
-                         .select("user_id", "product_id", "category_code", "brand", "price")
-                         .collect())
-    user_predict = [r.asDict() for r in user_predict_info]
-    return user_predict
+                         .select("user_id", "product_id", "category_code", "brand", "price"))
+    return df_to_dict_list(user_predict_info)
 
 
 @app.route("/api/stat/top_category")
@@ -49,7 +53,7 @@ def top_category():
     percentage_sum = cat_percentage.agg(functions.sum("percentage")).first()[0]
     other_percentage = 1 - percentage_sum
 
-    cat_percentage_list = [r.asDict() for r in cat_percentage.collect()]
+    cat_percentage_list = df_to_dict_list(cat_percentage)
     cat_percentage_list.append({"category_code": "Other", "percentage": other_percentage})
 
     cat_percentage.unpersist()  # Remove cache to avoid OOM
@@ -64,8 +68,7 @@ def top_user():
     )
     user_spend = user_spend.sort("spend", ascending=False).limit(10)
 
-    user_spend_list = [r.asDict() for r in user_spend.collect()]
-    return user_spend_list
+    return df_to_dict_list(user_spend)
 
 
 def get_per_month_data(df):
@@ -91,8 +94,7 @@ def get_per_month_data(df):
                  .otherwise("Unknown")
     )
 
-    per_month_sale_list = [r.asDict() for r in per_month_sale.collect()]
-    return per_month_sale_list
+    return df_to_dict_list(per_month_sale)
 
 
 @app.route("/api/stat/per_month")
