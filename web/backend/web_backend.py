@@ -13,7 +13,7 @@ prediction_schema = types.StructType([
     types.StructField("brand", types.StringType()),
     types.StructField("price", types.DoubleType()),
 ])
-prediction = spark.read.csv("../../result/predictions/", header=True, schema=prediction_schema)
+prediction = spark.read.csv("../result/predictions/", header=True, schema=prediction_schema)
 prediction.cache()
 
 transactions_schema = types.StructType([
@@ -26,7 +26,7 @@ transactions_schema = types.StructType([
     types.StructField("price", types.DoubleType()),
     types.StructField("user_id", types.LongType())
 ])
-transactions = spark.read.csv("../../result/transformed_data", header=True, schema=transactions_schema)
+transactions = spark.read.csv("../result/transformed_data", header=True, schema=transactions_schema)
 transactions.cache()
 
 
