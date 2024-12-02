@@ -1,3 +1,5 @@
+import calendar
+import pandas as pd
 from flask import Flask
 from pyspark.sql import SparkSession, functions, types
 
@@ -30,17 +32,13 @@ transactions = spark.read.csv("../result/transformed_data", header=True, schema=
 transactions.cache()
 
 
-def df_to_dict_list(df):
-    # Change the Dataframe to list of Dict, Flask render JSON base on it.
-    dict_list = [r.asDict() for r in df.collect()]
-    return dict_list
-
-
 @app.route("/api/user_predict/<user_id>")
 def predict_info(user_id):
     user_predict_info = (prediction.filter(prediction["user_id"] == user_id)
                          .select("user_id", "product_id", "category_code", "brand", "price"))
-    return df_to_dict_list(user_predict_info)
+
+    dict_list = [r.asDict() for r in user_predict_info.collect()]
+    return dict_list
 
 
 @app.route("/api/stat/top_category")
@@ -53,11 +51,15 @@ def top_category():
     percentage_sum = cat_percentage.agg(functions.sum("percentage")).first()[0]
     other_percentage = 1 - percentage_sum
 
-    cat_percentage_list = df_to_dict_list(cat_percentage)
-    cat_percentage_list.append({"category_code": "Other", "percentage": other_percentage})
-
+    cat_percentage_df = cat_percentage.toPandas()
     cat_percentage.unpersist()  # Remove cache to avoid OOM
-    return cat_percentage_list
+
+    cat_percentage_df = pd.concat([cat_percentage_df,
+                                   pd.DataFrame({"category_code": ["Others"], "percentage": [other_percentage]})])
+    return {
+        "labels": cat_percentage_df["category_code"].tolist(),
+        "datasets": [{"data": cat_percentage_df["percentage"].tolist()}]
+    }
 
 
 @app.route("/api/stat/top_user")
@@ -68,7 +70,18 @@ def top_user():
     )
     user_spend = user_spend.sort("spend", ascending=False).limit(10)
 
-    return df_to_dict_list(user_spend)
+    top_user_df = user_spend.toPandas()
+
+    return {
+        "labels": top_user_df["user_id"].tolist(),
+        "datasets": [{
+            "label": "Total Spending",
+            "data": top_user_df["spend"].tolist()
+        }, {
+            "label": "Number of Products",
+            "data": top_user_df["count"].tolist()
+        }]
+    }
 
 
 def get_per_month_data(df):
@@ -77,24 +90,19 @@ def get_per_month_data(df):
         functions.sum("price").alias("sales"),
         functions.count(functions.expr("*")).alias("count")
     ).orderBy("month")
-    per_month_sale = per_month_sale.withColumn(
-        "month",
-        functions.when(per_month_sale["month"] == 1, "January")
-                 .when(per_month_sale["month"] == 2, "February")
-                 .when(per_month_sale["month"] == 3, "March")
-                 .when(per_month_sale["month"] == 4, "April")
-                 .when(per_month_sale["month"] == 5, "May")
-                 .when(per_month_sale["month"] == 6, "June")
-                 .when(per_month_sale["month"] == 7, "July")
-                 .when(per_month_sale["month"] == 8, "August")
-                 .when(per_month_sale["month"] == 9, "September")
-                 .when(per_month_sale["month"] == 10, "October")
-                 .when(per_month_sale["month"] == 11, "November")
-                 .when(per_month_sale["month"] == 12, "December")
-                 .otherwise("Unknown")
-    )
+    per_month_sale_df = per_month_sale.toPandas()
+    per_month_sale_df["month"] = per_month_sale_df["month"].apply(lambda x: calendar.month_name[x])
 
-    return df_to_dict_list(per_month_sale)
+    return {
+        "labels": per_month_sale_df["month"].tolist(),
+        "datasets": [{
+            "label": "Monthly Sales",
+            "data": per_month_sale_df["sales"].tolist()
+        }, {
+            "label": "Quantity Sold",
+            "data": per_month_sale_df["count"].tolist()
+        }]
+    }
 
 
 @app.route("/api/stat/per_month")
