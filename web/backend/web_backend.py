@@ -46,6 +46,8 @@ def top_category():
     sale_count = transactions.count()
     cat_percentage = transactions.groupBy("category_code").agg((functions.count(functions.expr("*")) / sale_count).alias("percentage"))
     cat_percentage = cat_percentage.sort("percentage", ascending=False).limit(15)
+    cat_percentage = cat_percentage.withColumn("category_code",
+                                               functions.element_at(functions.split(cat_percentage["category_code"], "\."), -1))
     cat_percentage = cat_percentage.cache()
 
     percentage_sum = cat_percentage.agg(functions.sum("percentage")).first()[0]
@@ -78,7 +80,7 @@ def top_user():
             "label": "Total Spending",
             "data": top_user_df["spend"].tolist()
         }, {
-            "label": "Number of Products",
+            "label": "Quantity Purchased",
             "data": top_user_df["count"].tolist()
         }]
     }
