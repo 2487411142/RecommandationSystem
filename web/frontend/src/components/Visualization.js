@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Bar, Pie, Line } from "react-chartjs-2";
+import { Bar, Pie } from "react-chartjs-2";
 import { Box, Grid, Typography } from "@mui/material";
 import axios from "axios"; 
 import {
@@ -15,7 +15,6 @@ import {
   Legend,
 } from "chart.js";
 
-// 注册 ChartJS 插件
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -139,7 +138,7 @@ const Visualization = () => {
         <Grid item xs={12} md={6}>
           <Box height={300}>
             <Typography variant="h6" textAlign="center">
-              2020 每月销售和总价格
+              Sales Information Each Month in 2020
             </Typography>
             <Bar data={monthlySales} options={twoAxisOptions}/>
           </Box>
@@ -149,7 +148,7 @@ const Visualization = () => {
         <Grid item xs={12} md={6}>
           <Box height={300}>
             <Typography variant="h6" textAlign="center">
-              Top 10 花钱最多的客户
+              Top 10 Customers Who Spent the Most
             </Typography>
             <Bar data={topSpendingCustomers} options={{
                plugins: {
@@ -187,7 +186,7 @@ const Visualization = () => {
         <Grid item xs={12} md={6} sx={{ mt: 4 }}>
           <Box height={300}>
             <Typography variant="h6" textAlign="center">
-              Top 15 卖得最好的商品
+              Top 15 Best-Selling Categories
             </Typography>
             <Pie data={topSellingCategories} options={options} />
           </Box>
@@ -197,7 +196,7 @@ const Visualization = () => {
         <Grid item xs={12} md={6} sx={{ mt: 4 }}>
           <Box height={300}>
             <Typography variant="h6" textAlign="center">
-              Top 1 客户每月花费趋势
+              Top Category Monthly Sales
             </Typography>
             <Bar data={topSpendingTrends} options={twoAxisOptions} />
           </Box>
