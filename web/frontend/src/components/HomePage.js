@@ -9,7 +9,12 @@ const HomePage = () => {
   const fetchRecommendations = async () => {
     try {
       const response = await axios.get(`/api/user_predict/${userId}`);
-      setRecommendations(response.data);
+      const formattedRecommendations = response.data.map((item) => ({
+        brand: item.brand,
+        categoryCode: item.category_code,
+        price: item.price
+      }));
+      setRecommendations(formattedRecommendations);
     } catch (error) {
       console.error("Error fetching recommendations:", error);
     }
@@ -47,12 +52,13 @@ const HomePage = () => {
           recommendations.map((product, index) => (
             <Card key={index} sx={{ mb: 2, width: "300px" }}>
               <CardContent>
-                <Typography variant="h6">{product.name}</Typography>
+                <Typography variant="h6">Brand: {product.brand}</Typography>
+                <Typography variant="body2">Category: {product.categoryCode}</Typography>
+                <Typography variant="body2">Price: {product.price}</Typography>
               </CardContent>
             </Card>
           ))}
       </Box>
-
     </Box>
   );
 };
