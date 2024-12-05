@@ -42,10 +42,17 @@ const Visualization = () => {
   // Request data
   const fetchData = async () => {
     try {
-      const topCatResponse = await axios.get("/api/stat/top_category");
-      const topUserResponse = await axios.get("/api/stat/top_user");
-      const monthlySalesResponse = await axios.get("/api/stat/per_month");
-      const topCatTrendResponse = await axios.get("/api/stat/top_category_per_month");
+      const [
+        topCatResponse,
+        topUserResponse,
+        monthlySalesResponse,
+        topCatTrendResponse
+      ] = await Promise.all([
+        axios.get("/api/stat/top_category"),
+        axios.get("/api/stat/top_user"),
+        axios.get("/api/stat/per_month"),
+        axios.get("/api/stat/top_category_per_month")
+      ]);
 
       const topCat = topCatResponse.data
       const topUser = topUserResponse.data
