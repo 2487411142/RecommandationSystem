@@ -9,7 +9,9 @@ const Navbar = () => {
     <AppBar position="static" color="primary">
       <Toolbar>
         <Typography variant="h6" sx={{ flexGrow: 1 }}>
-        Welcome to the product recommendation system
+          <Button color="inherit" onClick={() => navigate("/")}>
+            Welcome to the product recommendation system
+          </Button>
         </Typography>
         <Button color="inherit" onClick={() => navigate("/visualization")}>
         Visualization
