@@ -23,15 +23,19 @@ subnet-01b7df6fe673bf7ed
 myTopic
 
 create topic
+
 /home/ubuntu/kafka_2.13-3.6.0/bin/kafka-topics.sh --create --bootstrap-server boot-kic5gwhr.c2.kafka-serverless.us-east-1.amazonaws.com:9098 --command-config /home/ubuntu/kafka_2.13-3.6.0/bin/client.properties --replication-factor 3 --partitions 1 --topic mytopic
 
 send message
+
 /home/ubuntu/kafka_2.13-3.6.0/bin/kafka-console-producer.sh --broker-list boot-kic5gwhr.c2.kafka-serverless.us-east-1.amazonaws.com:9098 --producer.config /home/ubuntu/kafka_2.13-3.6.0/bin/client.properties --topic myTopic
 
 receive message
+
 /home/ubuntu/kafka_2.13-3.6.0/bin/kafka-console-consumer.sh --bootstrap-server boot-kic5gwhr.c2.kafka-serverless.us-east-1.amazonaws.com:9098 --consumer.config /home/ubuntu/kafka_2.13-3.6.0/bin/client.properties --topic mytopic
 
 delete topic
+
 /home/ubuntu/kafka_2.13-3.6.0/bin/kafka-topics.sh --delete --bootstrap-server boot-kic5gwhr.c2.kafka-serverless.us-east-1.amazonaws.com:9098 --topic mytopic
 
 
