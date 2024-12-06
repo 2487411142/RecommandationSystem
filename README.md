@@ -4,12 +4,33 @@ dataset link: https://www.kaggle.com/datasets/kartik2112/fraud-detection
 
 create Kafka: https://docs.aws.amazon.com/msk/latest/developerguide/create-cluster.html
 
-Work:
-1.	Load local file to S3 bucket
-2.	In ec2 transform csv file to json messages and pass messages to Kafka 
-3.	Use EMR Spark consume(etl), save transformed messages back to S3.
-4.	Use sageMaker to build model and predict. The model accepts name and recommend a product. Save the result to RDS.
-5.	Visualize in local. 
+**Kafka info:**
+MSK VPC
+vpc-0bbc25d4942c9a443
+
+MSK Security groups associated with VPC
+sg-09734f8fd9d3cfb9f
+
+MSK Subnets
+subnet-0cad84146e7564e88
+subnet-0c18b130d53b4746d
+subnet-01b7df6fe673bf7ed
+
+
+**topic: **
+myTopic
+
+create topic
+/home/ubuntu/kafka_2.13-3.6.0/bin/kafka-topics.sh --create --bootstrap-server boot-kic5gwhr.c2.kafka-serverless.us-east-1.amazonaws.com:9098 --command-config /home/ubuntu/kafka_2.13-3.6.0/bin/client.properties --replication-factor 3 --partitions 1 --topic mytopic
+
+send message
+/home/ubuntu/kafka_2.13-3.6.0/bin/kafka-console-producer.sh --broker-list boot-kic5gwhr.c2.kafka-serverless.us-east-1.amazonaws.com:9098 --producer.config /home/ubuntu/kafka_2.13-3.6.0/bin/client.properties --topic myTopic
+
+receive message
+/home/ubuntu/kafka_2.13-3.6.0/bin/kafka-console-consumer.sh --bootstrap-server boot-kic5gwhr.c2.kafka-serverless.us-east-1.amazonaws.com:9098 --consumer.config /home/ubuntu/kafka_2.13-3.6.0/bin/client.properties --topic mytopic
+
+delete topic
+/home/ubuntu/kafka_2.13-3.6.0/bin/kafka-topics.sh --delete --bootstrap-server boot-kic5gwhr.c2.kafka-serverless.us-east-1.amazonaws.com:9098 --topic mytopic
 
 
 # More data analysis requirements
