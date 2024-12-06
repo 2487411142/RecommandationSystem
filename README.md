@@ -5,6 +5,7 @@ dataset link: https://www.kaggle.com/datasets/kartik2112/fraud-detection
 create Kafka: https://docs.aws.amazon.com/msk/latest/developerguide/create-cluster.html
 
 **Kafka info:**
+
 MSK VPC
 vpc-0bbc25d4942c9a443
 
@@ -18,6 +19,7 @@ subnet-01b7df6fe673bf7ed
 
 
 **topic: **
+
 myTopic
 
 create topic
