@@ -135,33 +135,6 @@ def main():
     rmse = evaluator.evaluate(predictions)
     print("Root-mean-square error = " + str(rmse))
 
-    # Generate top 10 movie recommendations for each user
-    userRecs = model.recommendForAllUsers(3)
-    userRecs.show()
-
-    # Generate top 10 user recommendations for each movie
-    prodRecs = model.recommendForAllItems(10)
-
-    # Generate top 10 movie recommendations for a specified set of users
-    users = time_weight_sum.select(als.getUserCol()).distinct().limit(3)
-    userSubsetRecs = model.recommendForUserSubset(users, 10)
-    # Generate top 10 user recommendations for a specified set of movies
-    movies = time_weight_sum.select(als.getItemCol()).distinct().limit(3)
-    prodSubSetRecs = model.recommendForItemSubset(movies, 10)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 if __name__ == '__main__':
     spark = SparkSession.builder.appName('purchase history').getOrCreate()
