@@ -22,8 +22,7 @@ how to run this part code.
 8. Then start the backend file: python app.py
 
 
-
-**Kafka info:**
+# Kafka info & Commands:
 
 MSK VPC: vpc-0bbc25d4942c9a443
 
@@ -31,9 +30,7 @@ MSK Security groups associated with VPC: sg-09734f8fd9d3cfb9f
 
 MSK Subnets: subnet-0cad84146e7564e88;subnet-0c18b130d53b4746d;subnet-01b7df6fe673bf7ed
 
-**Topic:**
-
-Name: myTopic
+Topic Name: myTopic
 
 create topic:
 
