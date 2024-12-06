@@ -53,7 +53,7 @@ c. Calculate the total transaction amount for each customer.
 # About Visualization
 For this part, using React.js as frontend framework to show variours charts, Flask as backend to deal with data.
 how to run this part code. 
-1. Clone the 'full_stack' flie to local;
+1. Clone the 'web' flie to local;
 2. cd full_stack/front_end, run the following command to install the necessary React dependencies:
    npm install
 3. Once the dependencies are installed, run the React development server.
