@@ -23,10 +23,15 @@ how to run this part code.
 
 # File description
 Kafka_messages: This folder stores all the Kafka messages, this is just for your reference, the original copy is on AWS S3.
+
 result: This folder stores transformed kafka messages and the prediction result.
+
 web: This folder stores web frontend and backend code.
+
 ML_time_wighted.py: This is our first version of the Spark ETL code with ML. It does not perform well, but we are providing it here for your reference.
+
 ml-count.py: This is our final version of the Spark ETL code with ML. 
+
 messagePublisher.py: This code read in csv file and publish messages to kafka topic.
 
 
