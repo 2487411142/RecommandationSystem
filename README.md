@@ -18,7 +18,7 @@ subnet-0c18b130d53b4746d
 subnet-01b7df6fe673bf7ed
 
 
-**topic: **
+**Topic**
 
 myTopic
 
