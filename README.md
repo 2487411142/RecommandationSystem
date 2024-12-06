@@ -1,6 +1,6 @@
 # BigDataFinalProject
 
-dataset link: [https://www.kaggle.com/datasets/kartik2112/fraud-detection](https://www.kaggle.com/datasets/mkechinov/ecommerce-purchase-history-from-electronics-store)
+dataset link: https://www.kaggle.com/datasets/mkechinov/ecommerce-purchase-history-from-electronics-store
 
 create Kafka: https://docs.aws.amazon.com/msk/latest/developerguide/create-cluster.html
 
