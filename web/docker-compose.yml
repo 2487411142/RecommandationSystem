@@ -1,0 +1,25 @@
+name: 732-proj-web
+
+services:
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - "3000"
+
+  backend:
+    build:
+      context: .
+      dockerfile: ./backend/Dockerfile
+    ports:
+      - "5000"
+
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - frontend
+      - backend
