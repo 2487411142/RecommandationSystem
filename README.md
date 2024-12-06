@@ -5,21 +5,18 @@ dataset link: https://www.kaggle.com/datasets/mkechinov/ecommerce-purchase-histo
 create Kafka: https://docs.aws.amazon.com/msk/latest/developerguide/create-cluster.html
 
 # About Visualization
-For this part, using React.js as frontend framework to show variours charts, Flask as backend to deal with data.
-how to run this part code. 
-1. Clone the 'web' flie to local;
-2. cd full_stack/front_end, run the following command to install the necessary React dependencies:
-   npm install
-3. Once the dependencies are installed, run the React development server.
-   npm start
-4. Navigate to the Backend Folder， open a new terminal window and navigate to backend folder: 
-   cd full_stack/back_end
-5. Install Backend Dependencies, ensure that inside the virtual environment
-6. install the required Python dependencies. Using a requirements.txt file for the backend, run the following command: 
-   pip install -r requirements.txt
-7. If don't have a requirements.txt, please using flask and flask-cors directly, it can manually install the required dependencies with:
-   pip install flask flask-cors
-8. Then start the backend file: python app.py
+For this part, using React.js as frontend framework to show various charts, Flask as backend to deal with data.
+
+To run the server, you need have the docker installed.
+
+1. Change to `web` folder
+2. Execute the command:
+    ```bash
+    docker compose up
+    ```
+3. Open your browser and visit: http://localhost/
+
+Please refer to [readme](web/README.md) in `web` folder for details about web server.
 
 # File description
 **Kafka_messages**: This folder stores all the Kafka messages, this is just for your reference, the original copy is on AWS S3.
