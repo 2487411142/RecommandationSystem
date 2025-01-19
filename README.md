@@ -1,3 +1,25 @@
+# Introduction
+Online shopping has become one of the most popular methods of shopping, generating millions
+of purchases every day. Consumers can easily purchase items such as clothing, electronics,
+furniture, and more from online retail platforms. One significant advantage of online retailing
+over traditional in-store shopping is its ability to collect user data. While a single purchase may
+offer limited insights, the aggregation of vast amounts of purchase data can uncover valuable
+business trends and patterns. In this project, we analyzed a group of individuals' purchasing
+preferences, employed collaborative filtering techniques to develop a recommender system, and
+provided personalized recommendations.
+
+# Methodology
+
+This recommendation system we developed integrates cloud technology, data
+streaming, data processing techniques, machine learning algorithms, and data visualization. All
+cloud-related components are hosted within a unified VPC network to mitigate security risks and
+minimize the overhead associated with infrastructure configuration, such as inter-component
+communication. The system architecture diagram below provides an overview of the system's
+workflow, accompanied by a detailed explanation of its components and functionality.
+
+
+![Alt text](/structure.png?raw=true "Optional Title")
+
 # Links
 
 dataset link: https://www.kaggle.com/datasets/mkechinov/ecommerce-purchase-history-from-electronics-store
