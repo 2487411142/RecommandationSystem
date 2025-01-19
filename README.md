@@ -21,32 +21,32 @@ workflow, accompanied by a detailed explanation of its components and functional
 ![Alt text](/structure.png?raw=true "System Architecture Diagram")
 
 1. The above-mentioned dataset is first stored as raw data in CSV format without any
-preprocessing in an **AWS EC2** machine.
+preprocessing in an ***AWS EC2*** machine.
 
 2. A Python script is written to read the raw data and convert each row of the raw data to a
-JSON format message, and finally send JSON message to an **Amazon Managed
-Streaming** for **Apache Kafka (MSK)** topic to fake a streaming data source. The scalability
+JSON format message, and finally send JSON message to an Amazon Managed
+Streaming for ***Apache Kafka (MSK)*** topic to fake a streaming data source. The scalability
 of MSK makes it a perfect fit for big data projects and is also the major reason for us to
 choose it.
 
-3. An **AWS Firehose** connector is configured on MSK to connect the MSK cluster and an
-**S3** bucket.
+3. An ***AWS Firehose*** connector is configured on MSK to connect the MSK cluster and an
+***S3*** bucket.
 
 4. Once the messages arrive at the Kafka brokers, the Firehose connector collects them
 and uploads them to an S3 bucket as a file, triggered when the data reaches a 5 MB
 threshold.
 
-5. An **Amazon Elastic MapReduce (EMR)** cluster processes the files stored in the S3
+5. An ***Amazon Elastic MapReduce (EMR)*** cluster processes the files stored in the S3
 bucket as input. This cluster is used for both data preprocessing and collaborative
 filtering-based machine learning tasks. EMR was chosen due to its built-in support for
 Apache Spark, which provides a robust environment for both data processing and
 machine learning through its integrated libraries. This allows us to perform both tasks
 seamlessly within a single platform.
 
-6. The **Spark** results which include transformed data and prediction results are stored in the
+6. The ***Spark*** results which include transformed data and prediction results are stored in the
 S3 bucket again.
 
-7. A locally hosted webpage built with **React** and **Flask** reads those results to visualize the
+7. A locally hosted webpage built with ***React*** and ***Flask*** reads those results to visualize the
 statistics and prediction results. Apart from visualizing data, this webpage also offers a
 search feature, which takes a user’s ID as input, and returns the top 3 recommendations
 for the user.
