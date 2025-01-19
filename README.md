@@ -18,7 +18,7 @@ communication. The system architecture diagram below provides an overview of the
 workflow, accompanied by a detailed explanation of its components and functionality.
 
 
-![Alt text](/structure.png?raw=true "Optional Title")
+![Alt text](/structure.png?raw=true "System Architecture Diagram")
 
 1. The above-mentioned dataset is first stored as raw data in CSV format without any
 preprocessing in an AWS EC2 machine.
@@ -60,6 +60,13 @@ sales trends and a list of the top ten customers based on spending, which is imp
 do analysis and predict. From the data analysis, we learned data-handling techniques, such as
 filling in missing values classifying data into meaningful categories, and using categorizing
 methods to predict products. 
+
+**There is also a 1-min [demo](732-proj-web-demo.mp4) to watch.**
+
+![Alt text](/main_page_with_recommandation.png?raw=true)
+
+![Alt text](/visualization_page.png?raw=true)
+
 
 # Links
 
