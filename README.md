@@ -61,7 +61,7 @@ do analysis and predict. From the data analysis, we learned data-handling techni
 filling in missing values classifying data into meaningful categories, and using categorizing
 methods to predict products. 
 
-**There is also a 1-min [demo](732-proj-web-demo.mp4) to watch.**
+**There is also a 1-min [demo](732-proj-web-demo.mp4) to download.**
 
 ![Alt text](/main_page_with_recommandation.png?raw=true)
 
